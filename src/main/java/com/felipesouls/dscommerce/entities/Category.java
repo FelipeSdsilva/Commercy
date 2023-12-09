@@ -1,6 +1,8 @@
 package com.felipesouls.dscommerce.entities;
 
+import com.felipesouls.dscommerce.dto.CategoryDTO;
 import jakarta.persistence.*;
+import org.springframework.beans.BeanUtils;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -23,6 +25,10 @@ public class Category {
     public Category(Long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public Category(CategoryDTO categoryDTO) {
+        BeanUtils.copyProperties(categoryDTO, this);
     }
 
     public Long getId() {
