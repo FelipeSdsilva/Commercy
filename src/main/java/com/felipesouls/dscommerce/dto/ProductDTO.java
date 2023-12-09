@@ -1,5 +1,8 @@
 package com.felipesouls.dscommerce.dto;
 
+import com.felipesouls.dscommerce.entities.Product;
+import org.springframework.beans.BeanUtils;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,6 +29,10 @@ public class ProductDTO {
         this.description = description;
         this.price = price;
         this.imgUrl = imgUrl;
+    }
+
+    public ProductDTO(Product product) {
+        BeanUtils.copyProperties(product, this);
     }
 
     public Long getId() {

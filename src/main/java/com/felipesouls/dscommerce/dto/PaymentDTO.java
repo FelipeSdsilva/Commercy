@@ -1,22 +1,12 @@
 package com.felipesouls.dscommerce.dto;
 
-import jakarta.persistence.*;
-
 import java.time.Instant;
 
-@Entity
-@Table(name = "tb_payment")
+
 public class PaymentDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
     private Instant moment;
-
-    @OneToOne
-    @MapsId
     private OrderDTO order;
 
     public PaymentDTO() {

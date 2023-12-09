@@ -1,16 +1,16 @@
 package com.felipesouls.dscommerce.dto;
 
+import com.felipesouls.dscommerce.entities.Category;
 import jakarta.persistence.*;
+import org.springframework.beans.BeanUtils;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity
-@Table(name = "tb_category")
+
 public class CategoryDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
     private String name;
 
@@ -23,6 +23,10 @@ public class CategoryDTO {
     public CategoryDTO(Long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public CategoryDTO(Category category) {
+        BeanUtils.copyProperties(category, this);
     }
 
     public Long getId() {
