@@ -1,5 +1,8 @@
 package com.felipesouls.dscommerce.dto;
 
+import com.felipesouls.dscommerce.entities.Payment;
+import org.springframework.beans.BeanUtils;
+
 import java.time.Instant;
 
 
@@ -16,6 +19,10 @@ public class PaymentDTO {
         this.id = id;
         this.moment = moment;
         this.order = order;
+    }
+
+    public PaymentDTO(Payment payment) {
+        BeanUtils.copyProperties(payment, this);
     }
 
     public Long getId() {
