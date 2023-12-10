@@ -10,20 +10,11 @@ import java.util.Set;
 
 public class CategoryDTO {
 
-
     private Long id;
     private String name;
 
     @ManyToMany(mappedBy = "categories")
     private final Set<ProductDTO> products = new HashSet<>();
-
-    public CategoryDTO() {
-    }
-
-    public CategoryDTO(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
 
     public CategoryDTO(Category category) {
         BeanUtils.copyProperties(category, this);
