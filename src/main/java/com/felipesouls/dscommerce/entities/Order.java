@@ -90,6 +90,10 @@ public class Order {
         return items.stream().map(OrderItem::getProduct).toList();
     }
 
+    public Double getTotalOrder(){
+        return getItems().stream().mapToDouble(OrderItem::getSubTotal).sum();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

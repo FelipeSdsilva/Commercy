@@ -1,9 +1,12 @@
 package com.felipesouls.dscommerce.dto;
 
+import com.felipesouls.dscommerce.entities.Order;
+import com.felipesouls.dscommerce.entities.OrderItem;
 import com.felipesouls.dscommerce.entities.enums.OrderStatus;
+import org.springframework.beans.BeanUtils;
+
 import java.time.Instant;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class OrderDTO {
@@ -12,7 +15,6 @@ public class OrderDTO {
     private Instant moment;
     private OrderStatus status;
     private UserDTO client;
-
     private PaymentDTO payment;
 
     private Set<OrderItemDTO> items = new HashSet<>();
@@ -26,6 +28,17 @@ public class OrderDTO {
         this.status = status;
         this.client = client;
         this.payment = payment;
+    }
+
+    public OrderDTO(Order order) {
+        BeanUtils.copyProperties(order, this);
+        client = new UserDTO(order.getClient());
+        payment = (order.getPayment() == null) ? null : new PaymentDTO(order.getPayment());
+    }
+
+    public OrderDTO(Order order, Set<OrderItem> orderItems) {
+        this(order);
+        orderItems.forEach(items -> this.items.add(new OrderItemDTO(items)));
     }
 
     public Long getId() {
@@ -72,7 +85,7 @@ public class OrderDTO {
         return items;
     }
 
-    public List<ProductDTO> getProduct() {
-        return items.stream().map(OrderItemDTO::getProductDTO).toList();
+    public Double getTotalOrder() {
+        return getItems().stream().mapToDouble(OrderItemDTO::getSubTotal).sum();
     }
 }
