@@ -11,6 +11,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -39,7 +40,7 @@ public class ProductService {
     public ProductDTO updateProductPerId(Long id, ProductDTO productDTO) {
         try {
             Product product = productRepository.getReferenceById(id);
-            convertDtoInEntity(productDTO,product);
+            convertDtoInEntity(productDTO, product);
             productRepository.save(product);
             return new ProductDTO(product);
         } catch (EntityNotFoundException e) {
@@ -47,17 +48,19 @@ public class ProductService {
         }
     }
 
+    @Transactional(propagation = Propagation.SUPPORTS)
     public void deleteProductPerId(Long id) {
+
+        if (!productRepository.existsById(id))
+            throw new ResourceNotFoundException("");
         try {
             productRepository.deleteById(id);
-        } catch (EntityNotFoundException e) {
-            throw new ResourceNotFoundException("");
         } catch (DataIntegrityViolationException e) {
             throw new DatabaseException("");
         }
     }
 
-    private void convertDtoInEntity(ProductDTO productDTO, Product product){
+    private void convertDtoInEntity(ProductDTO productDTO, Product product) {
         product.setName(productDTO.getName());
         product.setDescription(productDTO.getDescription());
         product.setPrice(productDTO.getPrice());

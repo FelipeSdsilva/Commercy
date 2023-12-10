@@ -11,6 +11,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -38,7 +39,7 @@ public class CategoryService {
     public CategoryDTO updateCategoryPerId(Long id, CategoryDTO categoryDTO) {
         try {
             Category category = categoryRepository.getReferenceById(id);
-            category.setName(category.getName());
+            category.setName(categoryDTO.getName());
             categoryRepository.save(category);
             return new CategoryDTO(category);
         } catch (EntityNotFoundException e) {
@@ -46,13 +47,15 @@ public class CategoryService {
         }
     }
 
+    @Transactional(propagation = Propagation.SUPPORTS)
     public void deleteCategoryPerId(Long id) {
+
+        if (!categoryRepository.existsById(id))
+            throw new ResourceNotFoundException(id + " Id not found");
         try {
             categoryRepository.deleteById(id);
-        } catch (EntityNotFoundException e) {
-            throw new ResourceNotFoundException("");
         } catch (DataIntegrityViolationException e) {
-            throw new DatabaseException("");
+            throw new DatabaseException("Integrate Violation!");
         }
     }
 }
