@@ -54,4 +54,5 @@ public class OrderItemDTO {
     public Double getSubTotal() {
         return this.price * this.quantity;
     }
+
 }

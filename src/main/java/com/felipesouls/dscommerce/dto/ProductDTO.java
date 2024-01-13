@@ -4,7 +4,6 @@ import com.felipesouls.dscommerce.entities.Product;
 import org.springframework.beans.BeanUtils;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class ProductDTO {
@@ -83,7 +82,4 @@ public class ProductDTO {
         return items;
     }
 
-    public List<OrderDTO> getOrder() {
-        return items.stream().map(OrderItemDTO::getOrderDTO).toList();
-    }
 }
