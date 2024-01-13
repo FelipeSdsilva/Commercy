@@ -1,5 +1,6 @@
 package com.felipesouls.dscommerce.entities;
 
+import com.felipesouls.dscommerce.dto.OrderItemDTO;
 import com.felipesouls.dscommerce.entities.pks.OrderItemPK;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -26,6 +27,13 @@ public class OrderItem {
         this.price = price;
     }
 
+    public OrderItem(OrderItemDTO orderItemDTO) {
+        id.setOrder(new Order(orderItemDTO.getOrder()));
+        id.setProduct(new Product(orderItemDTO.getProduct()));
+        quantity = orderItemDTO.getQuantity();
+        price = orderItemDTO.getPrice();
+    }
+
     public Order getOrder() {
         return id.getOrder();
     }
@@ -38,7 +46,7 @@ public class OrderItem {
         return id.getProduct();
     }
 
-    public void setProduct(Product product){
+    public void setProduct(Product product) {
         id.setProduct(product);
     }
 
