@@ -6,6 +6,8 @@ import com.felipesouls.dscommerce.entities.OrderItem;
 public class OrderItemDTO {
 
     private OrderItemPKDTO id = new OrderItemPKDTO();
+    private Long orderId;
+    private Long productId;
     private Integer quantity;
     private Double price;
 
