@@ -1,5 +1,6 @@
 package com.felipesouls.dscommerce.entities;
 
+import com.felipesouls.dscommerce.dto.OrderDTO;
 import com.felipesouls.dscommerce.entities.enums.OrderStatus;
 import jakarta.persistence.*;
 
@@ -40,6 +41,9 @@ public class Order {
         this.status = status;
         this.client = client;
         this.payment = payment;
+    }
+
+    public Order(OrderDTO order) {
     }
 
     public Long getId() {
