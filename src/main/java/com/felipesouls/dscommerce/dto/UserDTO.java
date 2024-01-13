@@ -1,5 +1,8 @@
 package com.felipesouls.dscommerce.dto;
 
+import com.felipesouls.dscommerce.entities.User;
+import org.springframework.beans.BeanUtils;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +29,10 @@ public class UserDTO {
         this.birthDate = birthDate;
         this.phone = phone;
         this.password = password;
+    }
+
+    public UserDTO(User user) {
+        BeanUtils.copyProperties(user, this);
     }
 
     public Long getId() {
