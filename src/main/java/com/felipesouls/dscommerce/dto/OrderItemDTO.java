@@ -1,11 +1,11 @@
 package com.felipesouls.dscommerce.dto;
 
-import com.felipesouls.dscommerce.dto.pks.OrderItemPKDTO;
+import com.felipesouls.dscommerce.entities.Order;
 import com.felipesouls.dscommerce.entities.OrderItem;
+import com.felipesouls.dscommerce.entities.Product;
 
 public class OrderItemDTO {
 
-    private OrderItemPKDTO id = new OrderItemPKDTO();
     private Long orderId;
     private Long productId;
     private Integer quantity;
@@ -14,45 +14,46 @@ public class OrderItemDTO {
     public OrderItemDTO() {
     }
 
-    public OrderItemDTO(OrderDTO order, ProductDTO product, Integer quantity, Double price) {
-        id.setOrderDTO(order);
-        id.setProductDTO(product);
+    public OrderItemDTO(Long orderId, Long productId, Integer quantity, Double price) {
+        this.orderId = orderId;
+        this.productId = productId;
         this.quantity = quantity;
         this.price = price;
     }
 
-    public OrderItemDTO(OrderItem items) {
-        setProductDTO(new ProductDTO(items.getProduct()));
-        quantity = items.getQuantity();
-        price = items.getPrice();
+    public Long getOrderId() {
+        return orderId;
     }
 
-    public OrderDTO getOrder() {
-        return id.getOrderDTO();
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
     }
 
-    public void setOrder(OrderDTO order) {
-        id.setOrderDTO(order);
+    public Long getProductId() {
+        return productId;
     }
 
-    public ProductDTO getProduct() {
-        return id.getProductDTO();
-    }
-
-    public void setProductDTO(ProductDTO productDTO) {
-        id.setProductDTO(productDTO);
+    public void setProductId(Long productId) {
+        this.productId = productId;
     }
 
     public Integer getQuantity() {
         return quantity;
     }
 
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
     public Double getPrice() {
         return price;
     }
 
-    public Double getSubTotal() {
-        return this.price * this.quantity;
+    public void setPrice(Double price) {
+        this.price = price;
     }
 
+    public OrderItem toOrderItem(Order order, Product product) {
+        return new OrderItem(order, product, this.quantity, this.price);
+    }
 }
