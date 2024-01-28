@@ -84,8 +84,4 @@ public class OrderDTO {
     public Set<OrderItemDTO> getItems() {
         return items;
     }
-
-    public Double getTotalOrder() {
-        return getItems().stream().mapToDouble(OrderItemDTO::getSubTotal).sum();
-    }
 }
