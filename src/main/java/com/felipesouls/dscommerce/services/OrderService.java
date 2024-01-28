@@ -1,7 +1,6 @@
 package com.felipesouls.dscommerce.services;
 
 import com.felipesouls.dscommerce.dto.OrderDTO;
-import com.felipesouls.dscommerce.dto.ProductDTO;
 import com.felipesouls.dscommerce.entities.Order;
 import com.felipesouls.dscommerce.entities.OrderItem;
 import com.felipesouls.dscommerce.repositories.OrderItemRepository;
@@ -65,8 +64,6 @@ public class OrderService {
         order.getItems().clear();
 
         orderDTO.getItems().forEach(orderItemDTO -> {
-            orderItemDTO.setProductDTO(new ProductDTO(productRepository.getReferenceById(orderItemDTO.getProduct().getId())));
-            orderItemDTO.setOrder(orderDTO);
             orderItemRepository.save(new OrderItem(orderItemDTO));
         });
 
