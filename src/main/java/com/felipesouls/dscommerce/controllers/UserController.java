@@ -34,7 +34,7 @@ public class UserController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_OPERATOR')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<UserDTO> postNewUser(@Valid @RequestBody UserInsertDTO dto) {
         UserDTO insertDTO = userService.insertNewUser(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{id}").buildAndExpand(insertDTO.getId()).toUri();
@@ -42,7 +42,7 @@ public class UserController {
     }
 
     @PutMapping(value = "/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_OPERATOR')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<UserDTO> putUser(@PathVariable Long id, @Valid @RequestBody UserUpdateDTO dto) {
         return ResponseEntity.ok().body(userService.updateUserPerId(id, dto));
     }
