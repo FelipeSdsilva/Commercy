@@ -5,7 +5,9 @@ import org.springframework.beans.BeanUtils;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 public class UserDTO {
@@ -18,6 +20,8 @@ public class UserDTO {
     private String password;
 
     private List<OrderDTO> orders = new ArrayList<>();
+
+    private Set<RoleDTO> roles = new HashSet<>();
 
     public UserDTO() {
     }
@@ -33,6 +37,7 @@ public class UserDTO {
 
     public UserDTO(User user) {
         BeanUtils.copyProperties(user, this);
+        user.getRoles().forEach(role -> this.roles.add(new RoleDTO(role)));
     }
 
     public Long getId() {
@@ -87,4 +92,7 @@ public class UserDTO {
         return orders;
     }
 
+    public Set<RoleDTO> getRoles() {
+        return roles;
+    }
 }
