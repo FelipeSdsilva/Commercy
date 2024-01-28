@@ -21,6 +21,9 @@ public class OrderItemDTO {
         this.price = price;
     }
 
+    public OrderItemDTO(OrderItem items) {
+    }
+
     public Long getOrderId() {
         return orderId;
     }

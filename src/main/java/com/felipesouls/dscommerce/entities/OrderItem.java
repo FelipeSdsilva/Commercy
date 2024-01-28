@@ -28,8 +28,6 @@ public class OrderItem {
     }
 
     public OrderItem(OrderItemDTO orderItemDTO) {
-        id.setOrder(new Order(orderItemDTO.getOrder()));
-        id.setProduct(new Product(orderItemDTO.getProduct()));
         quantity = orderItemDTO.getQuantity();
         price = orderItemDTO.getPrice();
     }
