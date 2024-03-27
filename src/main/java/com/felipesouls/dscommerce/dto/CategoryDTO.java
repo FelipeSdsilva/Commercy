@@ -1,7 +1,6 @@
 package com.felipesouls.dscommerce.dto;
 
 import com.felipesouls.dscommerce.entities.Category;
-import jakarta.persistence.*;
 import org.springframework.beans.BeanUtils;
 
 import java.util.HashSet;
@@ -13,7 +12,6 @@ public class CategoryDTO {
     private Long id;
     private String name;
 
-    @ManyToMany(mappedBy = "categories")
     private final Set<ProductDTO> products = new HashSet<>();
 
     public CategoryDTO(Long id, String name) {
