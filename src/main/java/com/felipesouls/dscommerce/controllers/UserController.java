@@ -23,12 +23,19 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Page<UserDTO>> getAllUserPaginated(Pageable pageable) {
         return ResponseEntity.ok().body(userService.listUserPagined(pageable));
     }
 
+    @GetMapping(value = "/logged")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_CLIENT')")
+    public ResponseEntity<UserDTO> getUserLogged() {
+        return ResponseEntity.ok(userService.retrieverUserLogged());
+    }
+
     @GetMapping(value = "/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_OPERATOR')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<UserDTO> getUserPerId(@PathVariable Long id) {
         return ResponseEntity.ok().body(userService.retriveUserPerId(id));
     }

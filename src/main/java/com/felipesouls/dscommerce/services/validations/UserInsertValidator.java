@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class UserInsertValidator implements ConstraintValidator<UserInsertValid, UserInsertDTO> {
 
@@ -25,11 +26,9 @@ public class UserInsertValidator implements ConstraintValidator<UserInsertValid,
 
         List<FieldMessage> list = new ArrayList<>();
 
-        // Coloque aqui seus testes de validação, acrescentando objetos FieldMessage à lista
+        Optional<User> user = userRepository.findByEmail(dto.getEmail());
 
-        User user = userRepository.findByEmail(dto.getEmail());
-
-        if (user != null) {
+        if (user.isEmpty()) {
             list.add(new FieldMessage("email", "This e-mail exist"));
         }
 

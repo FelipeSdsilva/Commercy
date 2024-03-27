@@ -15,10 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +47,11 @@ public class UserService implements UserDetailsService {
     @Transactional(readOnly = true)
     public UserDTO retriveUserPerId(Long id) {
         return new UserDTO(userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Id not found " + id)));
+    }
+
+    @Transactional(readOnly = true)
+    public UserDTO retrieverUserLogged() {
+        return new UserDTO(authenticate());
     }
 
     @Transactional
@@ -108,4 +116,15 @@ public class UserService implements UserDetailsService {
 
         return user;
     }
+
+    protected User authenticate() {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            Jwt jwtPrincipal = (Jwt) authentication.getPrincipal();
+            return userRepository.findByEmail(jwtPrincipal.getClaimAsString("username")).get();
+        } catch (Exception e) {
+            throw new UsernameNotFoundException("Email not found");
+        }
+    }
+
 }
