@@ -1,6 +1,7 @@
 package com.felipesouls.dscommerce.controllers;
 
 import com.felipesouls.dscommerce.dto.ProductDTO;
+import com.felipesouls.dscommerce.records.ProductMinRecord;
 import com.felipesouls.dscommerce.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -8,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
 
 @RestController
@@ -18,8 +20,13 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping
-    public ResponseEntity<Page<ProductDTO>> getProductsPagined(Pageable pageable) {
+    public ResponseEntity<Page<ProductDTO>> getProductsPaginated(Pageable pageable) {
         return ResponseEntity.ok(productService.allProductsPaginated(pageable));
+    }
+
+    @GetMapping(value = "/mine")
+    public ResponseEntity<Page<ProductMinRecord>> getProductsResumedPerNameAndPagination(@RequestParam(name = "name", defaultValue = "") String name, Pageable pageable) {
+        return ResponseEntity.ok(productService.retrieverAllProductResumedPaginated(name, pageable));
     }
 
     @GetMapping(value = "/{id}")
@@ -37,7 +44,7 @@ public class ProductController {
 
     @PutMapping(value = "/{id}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-    public ResponseEntity<ProductDTO> putProduct(@PathVariable Long id,@RequestBody ProductDTO productDTO) {
+    public ResponseEntity<ProductDTO> putProduct(@PathVariable Long id, @RequestBody ProductDTO productDTO) {
         return ResponseEntity.ok(productService.updateProductPerId(id, productDTO));
     }
 
