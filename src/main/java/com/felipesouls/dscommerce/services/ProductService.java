@@ -2,6 +2,8 @@ package com.felipesouls.dscommerce.services;
 
 import com.felipesouls.dscommerce.dto.ProductDTO;
 import com.felipesouls.dscommerce.entities.Product;
+import com.felipesouls.dscommerce.mapper.ProductMapper;
+import com.felipesouls.dscommerce.records.ProductMinRecord;
 import com.felipesouls.dscommerce.repositories.ProductRepository;
 import com.felipesouls.dscommerce.services.exceptions.DatabaseException;
 import com.felipesouls.dscommerce.services.exceptions.ResourceNotFoundException;
@@ -20,29 +22,39 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
+    private ProductMapper productMapper = new ProductMapper();
+
     @Transactional(readOnly = true)
     public Page<ProductDTO> allProductsPaginated(Pageable pageable) {
-        return productRepository.findAll(pageable).map(ProductDTO::new);
+        return productRepository.findAllProductsWithCategories(pageable).map(product -> new ProductDTO(product, product.getCategories()));
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ProductMinRecord> retrieverAllProductResumedPaginated(String name, Pageable pageable) {
+        return productRepository.paginationAllProductsAndSearchPerName(name, pageable).map(product -> new ProductMinRecord(product.getId(), product.getName(), product.getPrice(), product.getImgUrl()));
     }
 
     @Transactional(readOnly = true)
     public ProductDTO findProductPerId(Long id) {
-        return new ProductDTO(productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id + " Id not found")));
+        return new ProductDTO(productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id + " Id not found")), productRepository.findById(id).get().getCategories());
     }
 
     @Transactional
     public ProductDTO insertNewProduct(ProductDTO productDTO) {
-        Product product = productRepository.save(new Product(productDTO));
-        return new ProductDTO(product);
+        Product product = new Product();
+        product = productMapper.toEntity(productDTO, Product.class);
+        product = productRepository.save(product);
+        return new ProductDTO(product, product.getCategories());
     }
 
     @Transactional
     public ProductDTO updateProductPerId(Long id, ProductDTO productDTO) {
         try {
-            Product product = productRepository.getReferenceById(id);
-            convertDtoInEntity(productDTO, product);
+            Product product = new Product();
+            product = productRepository.getReferenceById(id);
+            product = productMapper.toEntity(productDTO, Product.class);
             productRepository.save(product);
-            return new ProductDTO(product);
+            return new ProductDTO(product, product.getCategories());
         } catch (EntityNotFoundException e) {
             throw new ResourceNotFoundException(id + " Id not found");
         }
@@ -50,7 +62,6 @@ public class ProductService {
 
     @Transactional(propagation = Propagation.SUPPORTS)
     public void deleteProductPerId(Long id) {
-
         if (!productRepository.existsById(id))
             throw new ResourceNotFoundException("");
         try {
@@ -58,12 +69,5 @@ public class ProductService {
         } catch (DataIntegrityViolationException e) {
             throw new DatabaseException("");
         }
-    }
-
-    private void convertDtoInEntity(ProductDTO productDTO, Product product) {
-        product.setName(productDTO.getName());
-        product.setDescription(productDTO.getDescription());
-        product.setPrice(productDTO.getPrice());
-        product.setImgUrl(productDTO.getImgUrl());
     }
 }
