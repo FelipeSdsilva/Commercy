@@ -17,7 +17,6 @@ public class UserDTO {
     private String email;
     private LocalDate birthDate;
     private String phone;
-    private String password;
 
     private List<OrderDTO> orders = new ArrayList<>();
 
@@ -32,7 +31,6 @@ public class UserDTO {
         this.email = email;
         this.birthDate = birthDate;
         this.phone = phone;
-        this.password = password;
     }
 
     public UserDTO(User user) {
@@ -78,14 +76,6 @@ public class UserDTO {
 
     public void setPhone(String phone) {
         this.phone = phone;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public List<OrderDTO> getOrders() {
