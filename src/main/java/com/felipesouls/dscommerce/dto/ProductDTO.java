@@ -1,5 +1,6 @@
 package com.felipesouls.dscommerce.dto;
 
+import com.felipesouls.dscommerce.entities.Category;
 import com.felipesouls.dscommerce.entities.Product;
 import org.springframework.beans.BeanUtils;
 
@@ -7,7 +8,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ProductDTO {
-
 
     private Long id;
     private String name;
@@ -28,6 +28,11 @@ public class ProductDTO {
         this.description = description;
         this.price = price;
         this.imgUrl = imgUrl;
+    }
+
+    public ProductDTO(Product product, Set<Category> categories) {
+        BeanUtils.copyProperties(product, this);
+        categories.forEach(category -> this.categories.add(new CategoryDTO(category)));
     }
 
     public ProductDTO(Product product) {
