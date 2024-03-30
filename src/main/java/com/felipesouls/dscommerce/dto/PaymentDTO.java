@@ -10,7 +10,6 @@ public class PaymentDTO {
 
     private Long id;
     private Instant moment;
-    private OrderDTO order;
 
     public PaymentDTO() {
     }
@@ -18,7 +17,6 @@ public class PaymentDTO {
     public PaymentDTO(Long id, Instant moment, OrderDTO order) {
         this.id = id;
         this.moment = moment;
-        this.order = order;
     }
 
     public PaymentDTO(Payment payment) {
@@ -41,13 +39,6 @@ public class PaymentDTO {
         this.moment = moment;
     }
 
-    public OrderDTO getOrder() {
-        return order;
-    }
-
-    public void setOrder(OrderDTO order) {
-        this.order = order;
-    }
 
     @Override
     public boolean equals(Object o) {

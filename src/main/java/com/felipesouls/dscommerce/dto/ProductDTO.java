@@ -17,8 +17,6 @@ public class ProductDTO {
 
     private Set<CategoryDTO> categories = new HashSet<>();
 
-    private Set<OrderItemDTO> items = new HashSet<>();
-
     public ProductDTO() {
     }
 
@@ -81,10 +79,6 @@ public class ProductDTO {
 
     public Set<CategoryDTO> getCategories() {
         return categories;
-    }
-
-    public Set<OrderItemDTO> getItems() {
-        return items;
     }
 
 }

@@ -5,3 +5,4 @@ import com.felipesouls.dscommerce.entities.Product;
 
 public class ProductMapper extends EntityMapper<Product, ProductDTO> {
 }
+

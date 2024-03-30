@@ -49,9 +49,8 @@ public class CategoryService {
 
     @Transactional(propagation = Propagation.SUPPORTS)
     public void deleteCategoryPerId(Long id) {
-
         if (!categoryRepository.existsById(id))
-            throw new ResourceNotFoundException(id + " Id not found");
+            throw new ResourceNotFoundException("Id: "+id + " not found!");
         try {
             categoryRepository.deleteById(id);
         } catch (DataIntegrityViolationException e) {

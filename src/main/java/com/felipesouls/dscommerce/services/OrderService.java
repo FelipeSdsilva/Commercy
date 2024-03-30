@@ -1,8 +1,6 @@
 package com.felipesouls.dscommerce.services;
 
 import com.felipesouls.dscommerce.dto.OrderDTO;
-import com.felipesouls.dscommerce.entities.Order;
-import com.felipesouls.dscommerce.entities.OrderItem;
 import com.felipesouls.dscommerce.repositories.OrderItemRepository;
 import com.felipesouls.dscommerce.repositories.OrderRepository;
 import com.felipesouls.dscommerce.repositories.ProductRepository;
@@ -35,7 +33,7 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public OrderDTO findOrderPerId(Long id) {
-        return new OrderDTO(orderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id + "Not found")));
+        return new OrderDTO(orderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order: " + id + " not found")));
     }
 
     @SuppressWarnings("unused")
@@ -51,22 +49,12 @@ public class OrderService {
 
     @Transactional(propagation = Propagation.SUPPORTS)
     public void deleteOrderPerId(Long id) {
-        if (orderRepository.existsById(id))
-            throw new ResourceNotFoundException(id + " id not found!");
+        if (!orderRepository.existsById(id))
+            throw new ResourceNotFoundException("Order: " + id + " not found!");
         try {
             orderRepository.deleteById(id);
         } catch (DataIntegrityViolationException e) {
             throw new DatabaseException("Integrate violation!");
         }
     }
-
-    private void converterDtoForEntity(Order order, OrderDTO orderDTO) {
-        order.getItems().clear();
-
-        orderDTO.getItems().forEach(orderItemDTO -> {
-            orderItemRepository.save(new OrderItem(orderItemDTO));
-        });
-
-    }
-
 }

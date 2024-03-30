@@ -3,16 +3,11 @@ package com.felipesouls.dscommerce.dto;
 import com.felipesouls.dscommerce.entities.Category;
 import org.springframework.beans.BeanUtils;
 
-import java.util.HashSet;
-import java.util.Set;
-
 
 public class CategoryDTO {
 
     private Long id;
     private String name;
-
-    private final Set<ProductDTO> products = new HashSet<>();
 
     public CategoryDTO(Long id, String name) {
         this.id = id;
@@ -37,10 +32,6 @@ public class CategoryDTO {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Set<ProductDTO> getProducts() {
-        return products;
     }
 
     @Override

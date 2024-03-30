@@ -19,4 +19,8 @@ public class EntityMapper<E, D> {
     public E toEntity(D dto, Class<E> entityClass) {
         return modelMapper.map(dto, entityClass);
     }
+
+    public void updateFromDto(D dto, E entity) {
+        modelMapper.map(dto, entity);
+    }
 }

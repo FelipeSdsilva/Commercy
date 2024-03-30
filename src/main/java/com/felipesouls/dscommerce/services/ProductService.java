@@ -1,9 +1,12 @@
 package com.felipesouls.dscommerce.services;
 
+import com.felipesouls.dscommerce.dto.CategoryDTO;
 import com.felipesouls.dscommerce.dto.ProductDTO;
+import com.felipesouls.dscommerce.entities.Category;
 import com.felipesouls.dscommerce.entities.Product;
 import com.felipesouls.dscommerce.mapper.ProductMapper;
 import com.felipesouls.dscommerce.records.ProductMinRecord;
+import com.felipesouls.dscommerce.repositories.CategoryRepository;
 import com.felipesouls.dscommerce.repositories.ProductRepository;
 import com.felipesouls.dscommerce.services.exceptions.DatabaseException;
 import com.felipesouls.dscommerce.services.exceptions.ResourceNotFoundException;
@@ -21,6 +24,9 @@ public class ProductService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     private ProductMapper productMapper = new ProductMapper();
 
@@ -43,6 +49,7 @@ public class ProductService {
     public ProductDTO insertNewProduct(ProductDTO productDTO) {
         Product product = new Product();
         product = productMapper.toEntity(productDTO, Product.class);
+        insertAndUpdateCategoriesInProduct(productDTO, product);
         product = productRepository.save(product);
         return new ProductDTO(product, product.getCategories());
     }
@@ -52,22 +59,32 @@ public class ProductService {
         try {
             Product product = new Product();
             product = productRepository.getReferenceById(id);
-            product = productMapper.toEntity(productDTO, Product.class);
+            productDTO.setId(product.getId());
+            productMapper.updateFromDto(productDTO, product);
+            insertAndUpdateCategoriesInProduct(productDTO, product);
             productRepository.save(product);
             return new ProductDTO(product, product.getCategories());
         } catch (EntityNotFoundException e) {
-            throw new ResourceNotFoundException(id + " Id not found");
+            throw new ResourceNotFoundException("Id: " + id + " not found!");
         }
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
     public void deleteProductPerId(Long id) {
         if (!productRepository.existsById(id))
-            throw new ResourceNotFoundException("");
+            throw new ResourceNotFoundException("Id: " + id + " not found!");
         try {
             productRepository.deleteById(id);
         } catch (DataIntegrityViolationException e) {
-            throw new DatabaseException("");
+            throw new DatabaseException("Violation database!");
+        }
+    }
+
+    private void insertAndUpdateCategoriesInProduct(ProductDTO productDTO, Product product) {
+        product.getCategories().clear();
+        for (CategoryDTO categoryDTO : productDTO.getCategories()) {
+            Category category = categoryRepository.getReferenceById(categoryDTO.getId());
+            product.getCategories().add(category);
         }
     }
 }
