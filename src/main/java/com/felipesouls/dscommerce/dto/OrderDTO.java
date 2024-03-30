@@ -14,7 +14,7 @@ public class OrderDTO {
     private Long id;
     private Instant moment;
     private OrderStatus status;
-    private UserDTO client;
+    private UserMinDTO client;
     private PaymentDTO payment;
 
     private Set<OrderItemDTO> items = new HashSet<>();
@@ -22,7 +22,7 @@ public class OrderDTO {
     public OrderDTO() {
     }
 
-    public OrderDTO(Long id, Instant moment, OrderStatus status, UserDTO client, PaymentDTO payment) {
+    public OrderDTO(Long id, Instant moment, OrderStatus status, UserMinDTO client, PaymentDTO payment) {
         this.id = id;
         this.moment = moment;
         this.status = status;
@@ -32,7 +32,7 @@ public class OrderDTO {
 
     public OrderDTO(Order order) {
         BeanUtils.copyProperties(order, this);
-        client = new UserDTO(order.getClient());
+        client = new UserMinDTO(order.getClient());
         payment = (order.getPayment() == null) ? null : new PaymentDTO(order.getPayment());
     }
 
@@ -65,11 +65,11 @@ public class OrderDTO {
         this.status = status;
     }
 
-    public UserDTO getClient() {
+    public UserMinDTO getClient() {
         return client;
     }
 
-    public void setClient(UserDTO client) {
+    public void setClient(UserMinDTO client) {
         this.client = client;
     }
 

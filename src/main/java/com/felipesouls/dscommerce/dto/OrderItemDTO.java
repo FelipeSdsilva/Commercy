@@ -6,7 +6,6 @@ import com.felipesouls.dscommerce.entities.Product;
 
 public class OrderItemDTO {
 
-    private Long orderId;
     private Long productId;
     private Integer quantity;
     private Double price;
@@ -14,22 +13,13 @@ public class OrderItemDTO {
     public OrderItemDTO() {
     }
 
-    public OrderItemDTO(Long orderId, Long productId, Integer quantity, Double price) {
-        this.orderId = orderId;
+    public OrderItemDTO(Long productId, Integer quantity, Double price) {
         this.productId = productId;
         this.quantity = quantity;
         this.price = price;
     }
 
     public OrderItemDTO(OrderItem items) {
-    }
-
-    public Long getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(Long orderId) {
-        this.orderId = orderId;
     }
 
     public Long getProductId() {
