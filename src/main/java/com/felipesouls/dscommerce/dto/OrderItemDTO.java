@@ -1,12 +1,11 @@
 package com.felipesouls.dscommerce.dto;
 
-import com.felipesouls.dscommerce.entities.Order;
 import com.felipesouls.dscommerce.entities.OrderItem;
-import com.felipesouls.dscommerce.entities.Product;
 
 public class OrderItemDTO {
 
     private Long productId;
+    private String name;
     private Integer quantity;
     private Double price;
 
@@ -20,6 +19,10 @@ public class OrderItemDTO {
     }
 
     public OrderItemDTO(OrderItem items) {
+        productId = items.getProduct().getId();
+        name = items.getProduct().getName();
+        quantity = items.getQuantity();
+        price = items.getProduct().getPrice();
     }
 
     public Long getProductId() {
@@ -28,6 +31,14 @@ public class OrderItemDTO {
 
     public void setProductId(Long productId) {
         this.productId = productId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Integer getQuantity() {
@@ -46,7 +57,7 @@ public class OrderItemDTO {
         this.price = price;
     }
 
-    public OrderItem toOrderItem(Order order, Product product) {
-        return new OrderItem(order, product, this.quantity, this.price);
+    public Double getSubTotal() {
+        return price * quantity;
     }
 }
