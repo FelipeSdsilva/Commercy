@@ -1,6 +1,14 @@
 package com.felipesouls.dscommerce.services;
 
 import com.felipesouls.dscommerce.dto.OrderDTO;
+import com.felipesouls.dscommerce.dto.OrderItemDTO;
+import com.felipesouls.dscommerce.entities.Order;
+import com.felipesouls.dscommerce.entities.OrderItem;
+import com.felipesouls.dscommerce.entities.Product;
+import com.felipesouls.dscommerce.entities.User;
+import com.felipesouls.dscommerce.entities.enums.OrderStatus;
+import com.felipesouls.dscommerce.records.OrderItemRecord;
+import com.felipesouls.dscommerce.records.OrderMinRecord;
 import com.felipesouls.dscommerce.repositories.OrderItemRepository;
 import com.felipesouls.dscommerce.repositories.OrderRepository;
 import com.felipesouls.dscommerce.repositories.ProductRepository;
@@ -14,6 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+
 @Service
 public class OrderService {
 
@@ -24,22 +34,44 @@ public class OrderService {
     private OrderItemRepository orderItemRepository;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private ProductRepository productRepository;
 
     @Transactional(readOnly = true)
-    public Page<OrderDTO> paginatedAllOrders(Pageable pageable) {
-        return orderRepository.findAll(pageable).map(order -> new OrderDTO(order, order.getItems()));
+    public Page<OrderMinRecord> paginatedAllOrders(Pageable pageable) {
+        return orderRepository.findAll(pageable).map(order -> new OrderMinRecord(order.getId(),
+                order.getMoment(), order.getStatus(), order.getClient().getName(), order.getTotalOrder()));
     }
 
     @Transactional(readOnly = true)
     public OrderDTO findOrderPerId(Long id) {
-        return new OrderDTO(orderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order: " + id + " not found")));
+        return new OrderDTO(orderRepository.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException("Order: " + id + " not found")));
     }
 
-    @SuppressWarnings("unused")
     @Transactional
-    public OrderDTO createAnewOrder(OrderDTO orderDTO) {
-        return null;
+    public OrderDTO createAnewOrder(OrderItemRecord record) {
+        Order order = new Order();
+        order.setMoment(Instant.now());
+        order.setStatus(OrderStatus.WAITING_PAYMENT);
+
+        User client = userService.authenticate();
+
+        order.setClient(client);
+
+        for (OrderItemDTO itemDto : record.items()) {
+            Product product = productRepository.getReferenceById(itemDto.getProductId());
+            OrderItem item = new OrderItem(order, product, itemDto.getQuantity(), product.getPrice());
+
+            order.getItems().add(item);
+        }
+
+        orderRepository.save(order);
+        orderItemRepository.saveAll(order.getItems());
+
+        return new OrderDTO(order);
     }
 
     @Transactional

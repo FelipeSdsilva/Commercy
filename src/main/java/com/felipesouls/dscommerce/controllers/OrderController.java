@@ -1,7 +1,10 @@
 package com.felipesouls.dscommerce.controllers;
 
 import com.felipesouls.dscommerce.dto.OrderDTO;
+import com.felipesouls.dscommerce.records.OrderItemRecord;
+import com.felipesouls.dscommerce.records.OrderMinRecord;
 import com.felipesouls.dscommerce.services.OrderService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +22,8 @@ public class OrderController {
     private OrderService orderService;
 
     @GetMapping
-    public ResponseEntity<Page<OrderDTO>> getAllOrdersPaginated(Pageable pageable) {
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<Page<OrderMinRecord>> getAllOrdersPaginated(Pageable pageable) {
         return ResponseEntity.ok(orderService.paginatedAllOrders(pageable));
     }
 
@@ -30,8 +34,9 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<OrderDTO> postNewOrder(@RequestBody OrderDTO orderDTO) {
-        OrderDTO newOrderDTO = orderService.createAnewOrder(orderDTO);
+    @PreAuthorize("hasRole('ROLE_CLIENT')")
+    public ResponseEntity<OrderDTO> postNewOrder(@Valid @RequestBody OrderItemRecord items) {
+        OrderDTO newOrderDTO = orderService.createAnewOrder(items);
         var uri = fromCurrentRequest().path("/{id}").buildAndExpand(newOrderDTO.getId()).toUri();
         return ResponseEntity.created(uri).body(newOrderDTO);
     }
