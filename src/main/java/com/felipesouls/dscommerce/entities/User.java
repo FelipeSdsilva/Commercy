@@ -99,6 +99,14 @@ public class User implements UserDetails {
         roles.add(role);
     }
 
+    public boolean hasRole(String roleName) {
+        for (Role role : this.roles) {
+            role.getAuthority().equals(roleName);
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

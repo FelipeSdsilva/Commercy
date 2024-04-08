@@ -39,6 +39,9 @@ public class OrderService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private AuthService authService;
+
     @Transactional(readOnly = true)
     public Page<OrderMinRecord> paginatedAllOrders(Pageable pageable) {
         return orderRepository.findAll(pageable).map(order -> new OrderMinRecord(order.getId(),
@@ -47,8 +50,10 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public OrderDTO findOrderPerId(Long id) {
-        return new OrderDTO(orderRepository.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException("Order: " + id + " not found")));
+        Order order = orderRepository.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException("Order: " + id + " not found"));
+        authService.validateSelfOrAdmin(order.getClient().getId());
+        return new OrderDTO(order);
     }
 
     @Transactional

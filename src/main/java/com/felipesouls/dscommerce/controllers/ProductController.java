@@ -35,7 +35,7 @@ public class ProductController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ProductDTO> postProduct(@RequestBody ProductDTO productDTO) {
         productDTO = productService.insertNewProduct(productDTO);
         var uri = fromCurrentRequest().path("/{id}").buildAndExpand(productDTO.getId()).toUri();
@@ -43,13 +43,13 @@ public class ProductController {
     }
 
     @PutMapping(value = "/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ProductDTO> putProduct(@PathVariable Long id, @RequestBody ProductDTO productDTO) {
         return ResponseEntity.ok(productService.updateProductPerId(id, productDTO));
     }
 
     @DeleteMapping(value = "/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteProductPerId(@PathVariable Long id) {
         productService.deleteProductPerId(id);
         return ResponseEntity.noContent().build();
