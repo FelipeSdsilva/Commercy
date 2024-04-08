@@ -3,11 +3,11 @@ package com.felipesouls.dscommerce.controllers;
 import com.felipesouls.dscommerce.dto.CategoryDTO;
 import com.felipesouls.dscommerce.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
 
@@ -19,8 +19,9 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @GetMapping
-    public ResponseEntity<Page<CategoryDTO>> getCategoryPerPaged(Pageable pageable) {
-        return ResponseEntity.ok(categoryService.allcategoriesPaginated(pageable));
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<List<CategoryDTO>> getCategoryPerPaged() {
+        return ResponseEntity.ok(categoryService.retrieverAllCategories());
     }
 
     @GetMapping(value = "/{id}")
@@ -29,7 +30,7 @@ public class CategoryController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<CategoryDTO> postNewCategory(@RequestBody CategoryDTO categoryDTO) {
         CategoryDTO categoryDTO1 = categoryService.insertNewCategory(categoryDTO);
         var uri = fromCurrentRequest().path("/{id}").buildAndExpand(categoryDTO.getId()).toUri();
@@ -37,13 +38,13 @@ public class CategoryController {
     }
 
     @PutMapping(value = "/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<CategoryDTO> putCategoryPerId(@PathVariable Long id, @RequestBody CategoryDTO categoryDTO) {
         return ResponseEntity.ok(categoryService.updateCategoryPerId(id, categoryDTO));
     }
 
     @DeleteMapping(value = "/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteCategoryPerId(@PathVariable Long id) {
         categoryService.deleteCategoryPerId(id);
         return ResponseEntity.noContent().build();

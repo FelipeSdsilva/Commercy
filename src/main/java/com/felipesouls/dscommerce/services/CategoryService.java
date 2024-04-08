@@ -8,11 +8,11 @@ import com.felipesouls.dscommerce.services.exceptions.ResourceNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class CategoryService {
@@ -21,8 +21,8 @@ public class CategoryService {
     private CategoryRepository categoryRepository;
 
     @Transactional(readOnly = true)
-    public Page<CategoryDTO> allcategoriesPaginated(Pageable pageable) {
-        return categoryRepository.findAll(pageable).map(CategoryDTO::new);
+    public List<CategoryDTO> retrieverAllCategories() {
+        return categoryRepository.findAll().stream().map(CategoryDTO::new).toList();
     }
 
     @Transactional(readOnly = true)
@@ -50,7 +50,7 @@ public class CategoryService {
     @Transactional(propagation = Propagation.SUPPORTS)
     public void deleteCategoryPerId(Long id) {
         if (!categoryRepository.existsById(id))
-            throw new ResourceNotFoundException("Id: "+id + " not found!");
+            throw new ResourceNotFoundException("Id: " + id + " not found!");
         try {
             categoryRepository.deleteById(id);
         } catch (DataIntegrityViolationException e) {
