@@ -1,4 +1,4 @@
-package com.felipesouls.dscommerce.dto.pks;
+package com.felipesouls.dscommerce.records.pks;
 
 import com.felipesouls.dscommerce.dto.OrderDTO;
 import com.felipesouls.dscommerce.dto.ProductDTO;
