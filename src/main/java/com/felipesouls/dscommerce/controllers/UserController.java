@@ -25,10 +25,10 @@ public class UserController {
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Page<UserDTO>> getAllUserPaginated(Pageable pageable) {
-        return ResponseEntity.ok().body(userService.listUserPagined(pageable));
+        return ResponseEntity.ok().body(userService.listUserPaginated(pageable));
     }
 
-    @GetMapping(value = "/logged")
+    @GetMapping(value = "/me")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_CLIENT')")
     public ResponseEntity<UserDTO> getUserLogged() {
         return ResponseEntity.ok(userService.retrieverUserLogged());
@@ -37,7 +37,7 @@ public class UserController {
     @GetMapping(value = "/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<UserDTO> getUserPerId(@PathVariable Long id) {
-        return ResponseEntity.ok().body(userService.retriveUserPerId(id));
+        return ResponseEntity.ok().body(userService.retrieveUserPerId(id));
     }
 
     @PostMapping

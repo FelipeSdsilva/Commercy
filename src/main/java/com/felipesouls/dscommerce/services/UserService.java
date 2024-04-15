@@ -40,12 +40,12 @@ public class UserService implements UserDetailsService {
     private RoleRepository roleRepository;
 
     @Transactional(readOnly = true)
-    public Page<UserDTO> listUserPagined(Pageable pageable) {
+    public Page<UserDTO> listUserPaginated(Pageable pageable) {
         return userRepository.findAll(pageable).map(UserDTO::new);
     }
 
     @Transactional(readOnly = true)
-    public UserDTO retriveUserPerId(Long id) {
+    public UserDTO retrieveUserPerId(Long id) {
         return new UserDTO(userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Id not found " + id)));
     }
 
